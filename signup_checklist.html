@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>报名提交确认清单 · Smartbi 餐饮选址大赛</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-size: 20px;
+    background-color: #0f0f14;
+    background-image:
+      radial-gradient(circle at 15% 25%, rgba(255, 1, 60, 0.07), transparent 45%),
+      radial-gradient(circle at 85% 75%, rgba(0, 230, 246, 0.07), transparent 45%);
+    padding: 40px;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+    color: #e8e8f0;
+  }
+
+  /* ===== 卡片容器 ===== */
+  .signup-card {
+    background: linear-gradient(160deg, #16161f 0%, #0f0f14 100%);
+    border: 1px solid rgba(0, 230, 246, 0.15);
+    border-radius: 16px;
+    padding: 48px 56px;
+    max-width: 560px;
+    width: 100%;
+    box-shadow:
+      0 0 0 1px rgba(255, 1, 60, 0.06),
+      0 20px 60px rgba(0, 0, 0, 0.5);
+    position: relative;
+    overflow: hidden;
+  }
+  .signup-card::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #ff013c, #00e6f6, #f8f005);
+    opacity: 0.7;
+  }
+
+  .card-eyebrow {
+    font-size: 0.72rem;
+    letter-spacing: 0.3em;
+    color: #00e6f6;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .card-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    margin-bottom: 8px;
+    background: linear-gradient(90deg, #ff013c, #00e6f6);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .card-sub {
+    font-size: 0.85rem;
+    color: #6D7788;
+    margin-bottom: 36px;
+    line-height: 1.6;
+  }
+
+  /* ===== 原始 checkbox CSS（适配配色） ===== */
+  /* Customize the label (the checkbox-btn) */
+  .checkbox-btn {
+    display: block;
+    position: relative;
+    padding-left: 30px;
+    margin-bottom: 22px;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+
+  /* Hide the browser's default checkbox */
+  .checkbox-btn input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+  }
+
+  .checkbox-btn label {
+    cursor: pointer;
+    font-size: 14px;
+    color: #b8b8c8;
+    line-height: 1.6;
+    transition: color 0.3s ease;
+  }
+  .checkbox-btn input:checked ~ label {
+    color: #00e6f6;
+  }
+
+  /* Create a custom checkbox */
+  .checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 25px;
+    width: 25px;
+    border: 2.5px solid #ffffff;
+    transition: .2s linear;
+  }
+  .checkbox-btn input:checked ~ .checkmark {
+    background-color: transparent;
+  }
+
+  /* Create the checkmark/indicator (hidden when not checked) */
+  .checkmark:after {
+    content: "";
+    position: absolute;
+    visibility: hidden;
+    opacity: 0;
+    left: 50%;
+    top: 40%;
+    width: 10px;
+    height: 14px;
+    /* 绿改青，统一 cyberpunk 配色 */
+    border: 2px solid #00e6f6;
+    filter: drop-shadow(0px 0px 10px #00e6f6);
+    border-width: 0 2.5px 2.5px 0;
+    transition: .2s linear;
+    transform: translate(-50%, -50%) rotate(-90deg) scale(0.2);
+  }
+
+  /* Show the checkmark when checked */
+  .checkbox-btn input:checked ~ .checkmark:after {
+    visibility: visible;
+    opacity: 1;
+    transform: translate(-50%, -50%) rotate(0deg) scale(1);
+    animation: pulse 1s ease-in;
+  }
+
+  .checkbox-btn input:checked ~ .checkmark {
+    transform: rotate(45deg);
+    border: none;
+  }
+
+  @keyframes pulse {
+    0%,
+    100% {
+      transform: translate(-50%, -50%) rotate(0deg) scale(1);
+    }
+    50% {
+      transform: translate(-50%, -50%) rotate(0deg) scale(1.6);
+    }
+  }
+
+  /* ===== 进度指示 ===== */
+  .progress-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 32px;
+    padding: 14px 18px;
+    background: rgba(0, 230, 246, 0.04);
+    border: 1px solid rgba(0, 230, 246, 0.12);
+    border-radius: 8px;
+  }
+  .progress-track {
+    flex: 1;
+    height: 4px;
+    background: #1a1a24;
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #ff013c, #00e6f6);
+    border-radius: 2px;
+    transition: width 0.4s ease;
+  }
+  .progress-text {
+    font-size: 0.75rem;
+    color: #6D7788;
+    letter-spacing: 0.1em;
+    white-space: nowrap;
+  }
+  .progress-count {
+    color: #00e6f6;
+    font-weight: 700;
+  }
+</style>
+</head>
+<body>
+
+<div class="signup-card">
+  <div class="card-eyebrow">SMARTBI CHALLENGE CUP</div>
+  <h1 class="card-title">提交前确认清单</h1>
+  <p class="card-sub">请逐项确认以下事项，全部勾选后方可提交报名申请。</p>
+
+  <!-- 进度条 -->
+  <div class="progress-bar">
+    <div class="progress-track">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+    <span class="progress-text"><span class="progress-count" id="progressCount">0</span>/5 已确认</span>
+  </div>
+
+  <!-- 确认项 1 -->
+  <div class="checkbox-btn">
+    <input type="checkbox" id="ck1" class="confirm-ck">
+    <label for="ck1">团队信息已填写完整（队名、5 名成员、指导教师）</label>
+    <span class="checkmark"></span>
+  </div>
+
+  <!-- 确认项 2 -->
+  <div class="checkbox-btn">
+    <input type="checkbox" id="ck2" class="confirm-ck">
+    <label for="ck2">所有成员已知情并同意参赛</label>
+    <span class="checkmark"></span>
+  </div>
+
+  <!-- 确认项 3 -->
+  <div class="checkbox-btn">
+    <input type="checkbox" id="ck3" class="confirm-ck">
+    <label for="ck3">选址博弈模型代码为团队原创，未抄袭他人成果</label>
+    <span class="checkmark"></span>
+  </div>
+
+  <!-- 确认项 4 -->
+  <div class="checkbox-btn">
+    <input type="checkbox" id="ck4" class="confirm-ck">
+    <label for="ck4">知悉答辩需准备 14 页 PPT，截止时间为 9 月 1 日</label>
+    <span class="checkmark"></span>
+  </div>
+
+  <!-- 确认项 5 -->
+  <div class="checkbox-btn">
+    <input type="checkbox" id="ck5" class="confirm-ck">
+    <label for="ck5">同意接收赛事进度通知及评审反馈</label>
+    <span class="checkmark"></span>
+  </div>
+</div>
+
+<script>
+  // 进度联动：每勾一项填充进度条
+  var cks = document.querySelectorAll('.confirm-ck');
+  var fill = document.getElementById('progressFill');
+  var count = document.getElementById('progressCount');
+  cks.forEach(function(ck) {
+    ck.addEventListener('change', function() {
+      var checked = document.querySelectorAll('.confirm-ck:checked').length;
+      fill.style.width = (checked / cks.length * 100) + '%';
+      count.textContent = checked;
+    });
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>报名页 CTA 按钮</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #0f0f14;
+      color: #fff;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+        "Microsoft YaHei", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+
+    .signup-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 18px;
+      padding: 40px 24px;
+    }
+
+    .signup-tag {
+      font-size: 13px;
+      letter-spacing: 0.3em;
+      color: #00e6f6;
+      text-transform: uppercase;
+    }
+
+    .signup-title {
+      margin: 0;
+      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-align: center;
+      background: linear-gradient(90deg, #fff, #00e6f6);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .signup-sub {
+      margin: 0 0 16px;
+      font-size: 14px;
+      color: #8b8b9a;
+      letter-spacing: 0.08em;
+    }
+
+    /* ===== Glitch CTA 按钮 ===== */
+    button,
+    button::after {
+      padding: 20px 48px;
+      font-size: 20px;
+      background: linear-gradient(45deg, transparent 5%, #ff013c 5%);
+      border: 0;
+      color: #fff;
+      letter-spacing: 0.2em;
+      line-height: 1;
+      box-shadow: 6px 0px 0px #00e6f6;
+      outline: transparent;
+      position: relative;
+      cursor: pointer;
+      font-family: inherit;
+      text-indent: 0.2em; /* 抵消字距导致的左偏，使中文居中 */
+    }
+
+    button::after {
+      --slice-0: inset(50% 50% 50% 50%);
+      --slice-1: inset(80% -6px 0 0);
+      --slice-2: inset(50% -6px 30% 0);
+      --slice-3: inset(10% -6px 85% 0);
+      --slice-4: inset(40% -6px 43% 0);
+      --slice-5: inset(80% -6px 5% 0);
+      content: "立即报名";
+      display: block;
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(45deg, transparent 3%, #00e6f6 3%, #00e6f6 5%, #ff013c 5%);
+      text-shadow: -3px -3px 0px #f8f005, 3px 3px 0px #00e6f6;
+      clip-path: var(--slice-0);
+    }
+
+    button:hover::after {
+      animation: 1s glitch;
+      animation-timing-function: steps(2, end);
+    }
+
+    @keyframes glitch {
+      0% {
+        clip-path: var(--slice-1);
+        transform: translate(-20px, -10px);
+      }
+
+      10% {
+        clip-path: var(--slice-3);
+        transform: translate(10px, 10px);
+      }
+
+      20% {
+        clip-path: var(--slice-1);
+        transform: translate(-10px, 10px);
+      }
+
+      30% {
+        clip-path: var(--slice-3);
+        transform: translate(0px, 5px);
+      }
+
+      40% {
+        clip-path: var(--slice-2);
+        transform: translate(-5px, 0px);
+      }
+
+      50% {
+        clip-path: var(--slice-3);
+        transform: translate(5px, 0px);
+      }
+
+      60% {
+        clip-path: var(--slice-4);
+        transform: translate(5px, 10px);
+      }
+
+      70% {
+        clip-path: var(--slice-2);
+        transform: translate(-10px, 10px);
+      }
+
+      80% {
+        clip-path: var(--slice-5);
+        transform: translate(20px, -10px);
+      }
+
+      90% {
+        clip-path: var(--slice-1);
+        transform: translate(-10px, 0px);
+      }
+
+      100% {
+        clip-path: var(--slice-1);
+        transform: translate(0);
+      }
+    }
+
+    .signup-note {
+      margin-top: 14px;
+      font-size: 12px;
+      color: #5a5a6a;
+      letter-spacing: 0.1em;
+    }
+  </style>
+</head>
+<body>
+  <section class="signup-section">
+    <span class="signup-tag">Smartbi Challenge</span>
+    <h1 class="signup-title">连锁餐饮选址博弈推演大赛</h1>
+    <p class="signup-sub">报名截止 · 2026 年 9 月 1 日</p>
+    <button>立即报名</button>
+    <p class="signup-note">鼠标悬停按钮查看故障效果</p>
+  </section>
+</body>
+</html>

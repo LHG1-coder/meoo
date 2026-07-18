@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>河南省"有想法，就秒悟"高校 AI 应用创意挑战赛</title>
+<style>
+/* ============================================================ 全局设计系统（浅色白底 + 靛蓝） */
+* { margin:0; padding:0; box-sizing:border-box; }
+:root{
+  --bg:#f6f7fb;
+  --bg2:#f4f5f9;
+  --card:#ffffff;
+  --line:#e4e5ee;
+  --line-bright:rgba(99,102,241,0.22);
+  --indigo:#6366f1;
+  --indigo-l:#818cf8;
+  --indigo-d:#4338ca;
+  --cyan:#0ea5e9;
+  --magenta:#a855f7;
+  --red:#ef4444;
+  --yellow:#f59e0b;
+  --gray:#6b6b80;
+  --text:#1a1a2e;
+  --text-l:#9a9aab;
+}
+html{ scroll-behavior:smooth; }
+body{
+  font-size:15px; background:var(--bg); color:var(--text);
+  font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;
+  overflow-x:hidden; line-height:1.6;
+  background-image:
+    radial-gradient(circle at 18% 12%,rgba(99,102,241,.07),transparent 42%),
+    radial-gradient(circle at 82% 88%,rgba(99,102,241,.05),transparent 44%);
+  background-attachment:fixed;
+}
+a{ color:var(--indigo); text-decoration:none; }
+button{ font-family:inherit; }
+.view{ display:none; animation:fade .4s ease; }
+.view.active{ display:block; }
+@keyframes fade{ from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:none;} }
+.wrap{ max-width:1160px; margin:0 auto; padding:0 32px; }
+.sec{ padding:72px 0; }
+.sec-eyebrow{ font-size:.72rem; letter-spacing:.3em; color:var(--indigo); text-transform:uppercase; margin-bottom:10px; }
+.sec-title{ font-size:1.7rem; font-weight:700; letter-spacing:.04em; margin-bottom:8px; color:var(--text); }
+.sec-sub{ color:var(--gray); font-size:.9rem; margin-bottom:44px; }
+.center{ text-align:center; }
+
+/* ============================================================ 开场 loader（靛蓝白底） */
+#intro{ position:fixed; inset:0; z-index:9999; background:var(--bg); display:flex; flex-direction:column; align-items:center; justify-content:center; transition:opacity .8s, visibility .8s; }
+#intro::before{ content:""; position:absolute; inset:0; background-image:linear-gradient(rgba(99,102,241,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(99,102,241,.05) 1px,transparent 1px); background-size:36px 36px; -webkit-mask-image:radial-gradient(circle at 50% 50%,#000 0%,transparent 62%); mask-image:radial-gradient(circle at 50% 50%,#000 0%,transparent 62%); }
+#intro::after{ content:""; position:absolute; inset:0; background:radial-gradient(circle at 50% 50%,rgba(99,102,241,.1),transparent 45%); pointer-events:none; }
+#intro.hide{ opacity:0; visibility:hidden; }
+.intro-svg{ width:210px; height:210px; position:relative; z-index:2; filter:drop-shadow(0 0 16px rgba(99,102,241,.2)); }
+.intro-svg .ring-out{ fill:none; stroke:var(--indigo); stroke-width:1.5; stroke-dasharray:2 10; transform-origin:100px 100px; animation:spin 9s linear infinite; opacity:.5; }
+.intro-svg .ring-mid{ fill:none; stroke:var(--indigo-l); stroke-width:1; stroke-dasharray:42 14; transform-origin:100px 100px; animation:spin 4.5s linear infinite reverse; opacity:.4; }
+.intro-svg .ring-in{ fill:none; stroke:var(--indigo); stroke-width:2.5; stroke-dasharray:120 240; transform-origin:100px 100px; animation:spin 3s linear infinite; opacity:.6; }
+.intro-svg .arc{ fill:none; stroke:var(--indigo); stroke-width:3; stroke-linecap:round; transform-origin:100px 100px; animation:spin 2s linear infinite; filter:drop-shadow(0 0 7px rgba(99,102,241,.6)); }
+.intro-svg .tick{ stroke:var(--indigo-l); stroke-width:1.2; opacity:.4; }
+.intro-svg .m-core{ fill:var(--indigo); font-family:-apple-system,sans-serif; font-weight:800; font-size:66px; text-anchor:middle; filter:drop-shadow(0 0 10px rgba(99,102,241,.5)); animation:blk 1.6s ease-in-out infinite; }
+@keyframes spin{ to{ transform:rotate(360deg); } }
+.intro-txt{ margin-top:30px; font-size:.82rem; letter-spacing:.5em; color:var(--indigo); position:relative; z-index:2; animation:blk 1.6s ease-in-out infinite; }
+.intro-txt::before,.intro-txt::after{ content:""; display:inline-block; width:34px; height:1px; background:var(--indigo); vertical-align:middle; margin:0 14px; }
+@keyframes blk{ 0%,100%{opacity:.5;} 50%{opacity:1;} }
+
+/* ============================================================ 导航（浅色） */
+nav{ position:fixed; top:0; left:0; right:0; z-index:100; background:rgba(255,255,255,.92); border-bottom:1px solid var(--line); box-shadow:0 2px 12px rgba(0,0,0,.04); }
+.nav-in{ display:flex; align-items:center; justify-content:space-between; height:62px; }
+.brand{ display:flex; align-items:center; gap:10px; font-weight:700; letter-spacing:.06em; cursor:pointer; color:var(--text); }
+.brand .logo-dot{ width:26px; height:26px; border-radius:7px; background:linear-gradient(135deg,var(--indigo),var(--indigo-l)); display:grid; place-items:center; color:#fff; font-size:.8rem; font-weight:800; }
+.brand small{ display:block; font-size:.62rem; font-weight:400; color:var(--text-l); letter-spacing:.18em; }
+.nav-links{ display:flex; gap:4px; align-items:center; flex-wrap:wrap; }
+.nav-links a{ color:var(--gray); font-size:.82rem; padding:7px 12px; border-radius:7px; cursor:pointer; transition:.25s; letter-spacing:.04em; }
+.nav-links a:hover{ color:var(--indigo); background:rgba(99,102,241,.06); }
+.nav-links a.on{ color:var(--indigo); background:rgba(99,102,241,.1); }
+.nav-cta{ padding:8px 18px !important; background:var(--indigo); color:#fff !important; font-weight:600; box-shadow:0 4px 12px rgba(99,102,241,.25); }
+.nav-cta:hover{ background:var(--indigo-d); color:#fff !important; box-shadow:0 6px 16px rgba(99,102,241,.35); }
+
+/* ============================================================ 通用组件 */
+.hero{ min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:90px 32px 60px; position:relative; }
+.hero::before{ content:""; position:absolute; inset:0; z-index:-1; background:radial-gradient(circle at 25% 30%,rgba(99,102,241,.09),transparent 45%),radial-gradient(circle at 75% 70%,rgba(99,102,241,.06),transparent 45%); }
+.eyebrow{ font-size:.78rem; letter-spacing:.4em; color:var(--indigo); text-transform:uppercase; margin-bottom:18px; }
+.hero h1{ font-size:clamp(2rem,5.5vw,3.6rem); font-weight:800; letter-spacing:.03em; line-height:1.18; margin-bottom:14px;
+  background:linear-gradient(90deg,var(--indigo),var(--indigo-l)); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
+.hero .sub{ font-size:1rem; color:var(--gray); max-width:620px; margin-bottom:14px; }
+.hero .sub b{ color:var(--indigo); }
+.tagline{ display:inline-block; padding:6px 16px; border:1px solid var(--line); border-radius:30px; font-size:.82rem; color:var(--indigo); background:#fff; margin-bottom:26px; }
+
+/* 倒计时 */
+.countdown{ display:flex; gap:14px; justify-content:center; margin:28px 0 36px; flex-wrap:wrap; }
+.cd-box{ background:var(--card); border:1px solid var(--line); border-radius:12px; padding:14px 18px; min-width:78px; box-shadow:0 4px 16px rgba(99,102,241,.07); position:relative; }
+.cd-box::before{ content:""; position:absolute; top:-1px; left:14px; right:14px; height:2px; background:var(--indigo); border-radius:2px; }
+.cd-box .num{ font-size:1.9rem; font-weight:800; color:var(--indigo); line-height:1; }
+.cd-box .lbl{ font-size:.66rem; color:var(--gray); margin-top:6px; letter-spacing:.12em; }
+
+/* 主 CTA 按钮（靛蓝实心，去掉 glitch RGB 分离） */
+.glitch{ position:relative; display:inline-block; padding:18px 50px; font-size:18px; font-weight:700; letter-spacing:.2em; text-indent:.2em; color:#fff; background:linear-gradient(90deg,var(--indigo),var(--indigo-l)); border:none; border-radius:12px; cursor:pointer; box-shadow:0 8px 24px rgba(99,102,241,.3); transition:.25s; }
+.glitch span{ position:relative; z-index:2; }
+.glitch:hover{ transform:translateY(-2px); box-shadow:0 12px 32px rgba(99,102,241,.4); }
+
+.btn{ display:inline-block; padding:12px 28px; border-radius:9px; font-size:.9rem; font-weight:600; letter-spacing:.05em; cursor:pointer; border:none; transition:.25s; position:relative; }
+.btn-pri{ background:var(--indigo); color:#fff; box-shadow:0 4px 12px rgba(99,102,241,.2); }
+.btn-pri:hover{ background:var(--indigo-d); transform:translateY(-1px); box-shadow:0 6px 18px rgba(99,102,241,.3); }
+.btn-ghost{ background:#fff; border:1px solid var(--line); color:var(--text); }
+.btn-ghost:hover{ border-color:var(--indigo); color:var(--indigo); background:rgba(99,102,241,.04); }
+
+/* 卡片网格 */
+.grid{ display:grid; gap:24px; }
+.g3{ grid-template-columns:repeat(3,1fr); }
+.g2{ grid-template-columns:repeat(2,1fr); }
+.card-box{ background:var(--card); border:1px solid var(--line); border-radius:14px; padding:28px; transition:.3s; box-shadow:0 2px 8px rgba(0,0,0,.03); position:relative; overflow:hidden; }
+.card-box:hover{ border-color:var(--line-bright); transform:translateY(-3px); box-shadow:0 12px 32px rgba(99,102,241,.1); }
+.card-box .ico{ width:44px; height:44px; border-radius:11px; display:grid; place-items:center; margin-bottom:16px; font-size:1.3rem; }
+.card-box h3{ font-size:1.1rem; margin-bottom:8px; color:var(--text); }
+.card-box p{ color:var(--gray); font-size:.86rem; }
+.badge{ display:inline-block; padding:3px 10px; border-radius:20px; font-size:.68rem; letter-spacing:.08em; margin-bottom:12px; }
+
+/* 时间线 */
+.tl{ max-width:720px; margin:0 auto; }
+.tl-item{ display:flex; gap:22px; padding:16px 0 16px 26px; border-left:2px solid var(--line); position:relative; margin-left:6px; }
+.tl-item::before{ content:""; position:absolute; left:-7px; top:22px; width:12px; height:12px; border-radius:50%; background:#fff; border:2px solid var(--indigo); }
+.tl-item.done::before{ background:var(--indigo); }
+.tl-date{ color:var(--indigo); font-weight:700; min-width:92px; font-size:.88rem; }
+.tl-text{ color:var(--text); font-size:.9rem; }
+.tl-stage{ font-size:.7rem; color:var(--indigo-l); letter-spacing:.1em; }
+
+/* 表格 */
+table{ width:100%; border-collapse:collapse; font-size:.86rem; }
+th,td{ padding:13px 16px; text-align:left; border-bottom:1px solid var(--line); }
+th{ color:var(--indigo); font-weight:600; letter-spacing:.05em; font-size:.8rem; }
+td{ color:var(--text); }
+tr:hover td{ background:rgba(99,102,241,.03); }
+
+/* 合作伙伴卡（靛蓝系） */
+.cards-row{ display:flex; gap:32px; flex-wrap:wrap; justify-content:center; }
+.pcard{ width:280px; height:180px; background:var(--card); position:relative; display:grid; place-content:center; border-radius:10px; overflow:hidden; transition:all .5s; border:1px solid var(--line); }
+.pcard .pborder{ position:absolute; inset:0; border:2px solid var(--indigo); opacity:0; transform:rotate(10deg); transition:all .5s; }
+.pcard .ptag{ position:absolute; left:50%; bottom:12px; transform:translateX(-50%); font-size:6px; text-transform:uppercase; padding:0 5px 0 8px; color:var(--indigo); background:var(--card); opacity:0; letter-spacing:7px; transition:all .5s; }
+.pcard .plogo{ height:34px; position:relative; width:33px; overflow:hidden; transition:all 1s; }
+.pcard .pl1{ height:33px; position:absolute; left:0; }
+.pcard .pl2{ position:absolute; left:40px; top:50%; transform:translateY(-50%); font-size:14px; font-weight:700; color:var(--indigo); white-space:nowrap; }
+.pcard .ptrail{ position:absolute; right:0; height:100%; width:100%; opacity:0; }
+.pcard .pbottom{ position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); margin-top:28px; color:var(--indigo); padding-left:8px; font-size:10px; opacity:0; transition:all .5s .5s; }
+.pcard:hover{ border-radius:0; transform:scale(1.1); box-shadow:0 12px 36px rgba(99,102,241,.18); }
+.pcard:hover .plogo{ width:140px; animation:tcur 1s; }
+.pcard:hover .pborder{ inset:14px; opacity:1; transform:rotate(0); }
+.pcard:hover .ptag{ letter-spacing:3px; opacity:1; }
+.pcard:hover .pbottom{ opacity:1; letter-spacing:8px; }
+.pcard:hover .ptrail{ animation:tr 1s; }
+@keyframes tcur{ 0%{border-right:1px solid transparent;} 10%,80%{border-right:1px solid var(--indigo);} 100%{border-right:1px solid transparent;} }
+@keyframes tr{ 0%{background:linear-gradient(90deg,rgba(99,102,241,0) 90%,rgb(99,102,241) 100%);opacity:0;} 30%,70%{background:linear-gradient(90deg,rgba(99,102,241,0) 70%,rgb(99,102,241) 100%);opacity:1;} 95%{background:linear-gradient(90deg,rgba(99,102,241,0) 90%,rgb(99,102,241) 100%);opacity:0;} }
+
+/* 报名区组件（复用，靛蓝系） */
+#checkbox-on{ display:none; }
+.control-element{ cursor:pointer; }
+.switch-wrap{ display:flex; align-items:center; gap:18px; margin-bottom:22px; }
+.svg-switch-container{ width:10em; }
+.switch-svg{ display:block; overflow:visible; }
+.track-sw{ fill:#ececf3; stroke:#dcdce6; stroke-width:1.5; transition:fill .45s,stroke .45s; }
+.knob{ fill:var(--text-l); transition:transform .5s cubic-bezier(.68,-.55,.265,1.55),fill .45s,filter .45s; filter:drop-shadow(0 2px 6px rgba(0,0,0,.15)); }
+.label-off,.label-on{ font-size:1.8em; font-family:sans-serif; fill:var(--text-l); pointer-events:none; transition:fill .4s,opacity .4s; }
+.label-off{ opacity:1; transition:opacity .35s; }
+.label-on{ opacity:0; transition:opacity .35s .1s; }
+#checkbox-on:checked ~ .position-container .knob{ transform:translateX(72px); fill:var(--indigo); filter:drop-shadow(0 0 8px rgba(99,102,241,.4)); }
+#checkbox-on:checked ~ .position-container .track-sw{ fill:#eef0fa; stroke:var(--indigo); }
+#checkbox-on:checked ~ .position-container .label-off{ opacity:0; }
+#checkbox-on:checked ~ .position-container .label-on{ opacity:1; fill:var(--indigo); }
+.checkbox-btn{ display:block; position:relative; padding-left:30px; margin-bottom:16px; cursor:pointer; user-select:none; }
+.checkbox-btn input{ position:absolute; opacity:0; cursor:pointer; height:0; width:0; }
+.checkbox-btn label{ cursor:pointer; font-size:.86rem; color:var(--gray); transition:color .3s; }
+.checkbox-btn input:checked ~ label{ color:var(--indigo); }
+.checkmark{ position:absolute; top:0; left:0; height:24px; width:24px; border:2.5px solid var(--line); border-radius:5px; transition:.2s; background:#fff; }
+.checkmark:after{ content:""; position:absolute; visibility:hidden; opacity:0; left:50%; top:40%; width:9px; height:13px; border:2px solid var(--indigo); border-width:0 2.5px 2.5px 0; transition:.2s; transform:translate(-50%,-50%) rotate(-90deg) scale(.2); }
+.checkbox-btn input:checked ~ .checkmark:after{ visibility:visible; opacity:1; transform:translate(-50%,-50%) rotate(0) scale(1); animation:pulse 1s; }
+.checkbox-btn input:checked ~ .checkmark{ transform:rotate(0); border-color:var(--indigo); background:rgba(99,102,241,.06); }
+@keyframes pulse{ 0%,100%{transform:translate(-50%,-50%) rotate(0) scale(1);} 50%{transform:translate(-50%,-50%) rotate(0) scale(1.6);} }
+.progress-bar{ display:flex; align-items:center; gap:12px; margin-bottom:26px; padding:12px 16px; background:rgba(99,102,241,.04); border:1px solid rgba(99,102,241,.12); border-radius:8px; }
+.progress-track{ flex:1; height:4px; background:#e4e5ee; border-radius:2px; overflow:hidden; }
+.progress-fill{ height:100%; width:0%; background:linear-gradient(90deg,var(--indigo),var(--indigo-l)); border-radius:2px; transition:width .4s; }
+.progress-text{ font-size:.7rem; color:var(--gray); letter-spacing:.1em; white-space:nowrap; }
+.progress-count{ color:var(--indigo); font-weight:700; }
+
+/* 表单字段 */
+.field{ margin-bottom:18px; }
+.field label{ display:block; font-size:.8rem; color:var(--gray); margin-bottom:6px; letter-spacing:.04em; }
+.field label .req{ color:var(--red); }
+.field input,.field select,.field textarea{ width:100%; padding:11px 14px; background:var(--bg2); border:1px solid var(--line); border-radius:8px; color:var(--text); font-size:.88rem; font-family:inherit; transition:.25s; }
+.field input::placeholder,.field textarea::placeholder{ color:var(--text-l); }
+.field input:focus,.field select:focus,.field textarea:focus{ outline:none; border-color:var(--indigo); box-shadow:0 0 0 3px rgba(99,102,241,.12); background:#fff; }
+.field textarea{ resize:vertical; min-height:80px; }
+.field-row{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+.hint{ font-size:.72rem; color:var(--text-l); margin-top:5px; }
+
+/* 提交加载 overlay（浅色靛蓝） */
+#submit-overlay{ position:fixed; inset:0; z-index:9998; background:rgba(246,247,251,.97); display:none; flex-direction:column; align-items:center; justify-content:center; }
+#submit-overlay::before{ content:""; position:absolute; inset:0; background-image:linear-gradient(rgba(99,102,241,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(99,102,241,.06) 1px,transparent 1px); background-size:40px 40px; pointer-events:none; }
+#submit-overlay::after{ content:""; position:absolute; left:0; right:0; height:2px; background:linear-gradient(90deg,transparent,var(--indigo),transparent); animation:scanY 2.5s linear infinite; }
+@keyframes scanY{ 0%{top:0;} 100%{top:100%;} }
+#submit-overlay.show{ display:flex; }
+.scene{ width:110px; height:110px; perspective:600px; }
+.cube{ --size:34px; width:var(--size); height:var(--size); transform-style:preserve-3d; position:relative; transform:rotateX(60deg) rotateZ(45deg); animation:cub 2.4s infinite linear; }
+.cube .face{ width:var(--size); height:var(--size); position:absolute; }
+.cube .top{ transform:rotateX(-90deg) translateZ(calc(var(--size)/2)); background:var(--indigo); }
+.cube .right{ transform:rotateY(90deg) translateZ(calc(var(--size)/2)); background:var(--indigo-l); }
+.cube .front{ transform:translateZ(calc(var(--size)/2)); background:var(--indigo-d); }
+.cube .back{ transform:rotateY(180deg) translateZ(calc(var(--size)/2)); background:#e0e1f0; }
+@keyframes cub{ 0%,40%{transform:rotateX(60deg) rotateZ(45deg) translate(0,0);} 50%{transform:rotateX(60deg) rotateZ(45deg) translate(26px,-26px);} 60%,100%{transform:rotateX(60deg) rotateZ(45deg) translate(0,0);} }
+.ov-text{ margin-top:32px; font-size:.92rem; letter-spacing:.2em; color:var(--indigo); animation:blk 1.4s infinite; }
+.ov-sub{ margin-top:8px; font-size:.72rem; color:var(--gray); letter-spacing:.15em; }
+
+/* 成功（浅色靛蓝） */
+#success{ position:fixed; inset:0; z-index:9998; background:rgba(246,247,251,.97); display:none; flex-direction:column; align-items:center; justify-content:center; text-align:center; }
+#success::before{ content:""; position:absolute; inset:0; background-image:linear-gradient(rgba(99,102,241,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(99,102,241,.06) 1px,transparent 1px); background-size:40px 40px; pointer-events:none; }
+#success.show{ display:flex; }
+.s-check{ width:88px; height:88px; border-radius:50%; border:3px solid var(--indigo); display:grid; place-items:center; box-shadow:0 0 30px rgba(99,102,241,.3),inset 0 0 20px rgba(99,102,241,.1); margin-bottom:24px; position:relative; z-index:2; background:#fff; }
+.s-check svg{ width:44px; height:44px; }
+.s-title{ font-size:1.3rem; font-weight:700; color:var(--indigo); letter-spacing:.08em; margin-bottom:8px; }
+.s-sub{ font-size:.84rem; color:var(--gray); max-width:400px; }
+
+/* 登录 modal — 秒悟品牌分栏式（浅色白底） */
+#login-modal{ position:fixed; inset:0; z-index:9997; background:rgba(26,26,46,.4); display:none; align-items:center; justify-content:center; padding:20px; }
+#login-modal.show{ display:flex; }
+.login-box{ display:flex; max-width:840px; width:100%; border-radius:18px; overflow:hidden; background:#fff; box-shadow:0 24px 80px rgba(0,0,0,.25); }
+.login-brand{ width:300px; flex-shrink:0; padding:42px 32px; background:linear-gradient(160deg,#f6f7fb 0%,#eef0fa 100%); display:flex; flex-direction:column; position:relative; overflow:hidden; border-right:1px solid #ececf3; }
+.login-brand::before{ content:""; position:absolute; top:-50px; right:-50px; width:170px; height:170px; border-radius:50%; background:rgba(99,102,241,.08); }
+.login-brand::after{ content:""; position:absolute; bottom:-60px; left:-30px; width:150px; height:150px; border-radius:50%; background:rgba(99,102,241,.05); }
+.login-brand .b-logo{ width:54px; height:54px; border-radius:14px; background:#6366f1; display:grid; place-items:center; font-size:1.9rem; font-weight:800; color:#fff; position:relative; z-index:2; box-shadow:0 8px 20px rgba(99,102,241,.3); }
+.login-brand .b-name{ font-size:1.3rem; font-weight:700; color:#1a1a2e; letter-spacing:.08em; margin-top:18px; position:relative; z-index:2; }
+.login-brand .b-en{ font-size:.72rem; color:#6366f1; letter-spacing:.32em; margin-top:5px; position:relative; z-index:2; }
+.login-brand .b-slogan{ margin-top:auto; position:relative; z-index:2; }
+.login-brand .b-slogan b{ display:block; font-size:1.15rem; color:#1a1a2e; font-weight:600; line-height:1.5; }
+.login-brand .b-slogan b span{ color:#6366f1; }
+.login-brand .b-slogan small{ display:block; font-size:.76rem; font-weight:400; color:#6b6b80; margin-top:12px; line-height:1.75; }
+.login-form-side{ flex:1; padding:42px 38px; position:relative; background:#fff; }
+.modal-close{ position:absolute; top:16px; right:18px; color:#9a9aab; cursor:pointer; font-size:1.2rem; background:none; border:none; transition:.2s; z-index:3; }
+.modal-close:hover{ color:#6366f1; }
+.login-form-side h3{ font-size:1.2rem; margin-bottom:4px; color:#1a1a2e; }
+.login-form-side .msub{ color:#6b6b80; font-size:.8rem; margin-bottom:22px; }
+.login-form-side .field label{ color:#6b6b80; }
+.login-form-side .field input{ background:#f4f5f9; border:1px solid #e4e5ee; color:#1a1a2e; }
+.login-form-side .field input::placeholder{ color:#b8b8c8; }
+.login-form-side .field input:focus{ border-color:#6366f1; box-shadow:0 0 0 3px rgba(99,102,241,.12); background:#fff; }
+.login-form-side .hint{ color:#9a9aab; }
+.login-form-side a{ color:#6366f1; }
+.login-form-side .btn-pri{ background:#6366f1; box-shadow:0 6px 16px rgba(99,102,241,.28); }
+.login-form-side .btn-pri:hover{ background:#5457e5; box-shadow:0 8px 22px rgba(99,102,241,.4); }
+.login-form-side .btn-ghost{ background:#f4f5f9; border:1px solid #e4e5ee; color:#1a1a2e; }
+.login-form-side .btn-ghost:hover{ border-color:#6366f1; color:#6366f1; background:#fff; }
+.tabs{ display:flex; gap:0; margin-bottom:22px; border-bottom:1px solid #ececf3; }
+.tab{ padding:10px 18px; cursor:pointer; color:#9a9aab; font-size:.86rem; border-bottom:2px solid transparent; transition:.2s; }
+.tab.on{ color:#6366f1; border-color:#6366f1; }
+
+/* 个人中心 */
+.dash-grid{ display:grid; grid-template-columns:240px 1fr; gap:28px; }
+.dash-side{ background:var(--card); border:1px solid var(--line); border-radius:14px; padding:20px; height:fit-content; box-shadow:0 2px 8px rgba(0,0,0,.03); }
+.dash-side .uinfo{ text-align:center; padding-bottom:16px; border-bottom:1px solid var(--line); margin-bottom:14px; }
+.dash-side .uinfo .ava{ width:56px; height:56px; border-radius:50%; background:linear-gradient(135deg,var(--indigo),var(--indigo-l)); margin:0 auto 10px; display:grid; place-items:center; font-weight:700; color:#fff; }
+.dash-side a{ display:block; padding:10px 14px; border-radius:8px; color:var(--gray); font-size:.85rem; cursor:pointer; margin-bottom:3px; transition:.2s; }
+.dash-side a:hover{ background:rgba(99,102,241,.06); color:var(--indigo); }
+.dash-side a.on{ background:rgba(99,102,241,.1); color:var(--indigo); }
+.todo{ display:flex; gap:14px; align-items:center; padding:14px 18px; background:rgba(239,68,68,.05); border:1px solid rgba(239,68,68,.18); border-radius:10px; margin-bottom:12px; }
+.todo .td-ico{ font-size:1.2rem; }
+.todo .td-t{ font-size:.88rem; }
+.todo .td-a{ margin-left:auto; }
+.stat-mini{ display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:24px; }
+.stat-mini .sm{ background:var(--card); border:1px solid var(--line); border-radius:10px; padding:16px; text-align:center; box-shadow:0 2px 8px rgba(0,0,0,.03); }
+.stat-mini .sm .n{ font-size:1.5rem; font-weight:800; color:var(--indigo); }
+.stat-mini .sm .l{ font-size:.7rem; color:var(--gray); margin-top:4px; }
+
+/* FAQ */
+.faq-item{ border:1px solid var(--line); border-radius:10px; margin-bottom:12px; overflow:hidden; background:var(--card); }
+.faq-q{ padding:16px 20px; cursor:pointer; display:flex; justify-content:space-between; align-items:center; font-size:.9rem; font-weight:600; color:var(--text); }
+.faq-q .arrow{ transition:.3s; color:var(--indigo); }
+.faq-a{ max-height:0; overflow:hidden; transition:max-height .3s; color:var(--gray); font-size:.84rem; }
+.faq-a div{ padding:0 20px 16px; }
+.faq-item.open .faq-a{ max-height:200px; }
+.faq-item.open .arrow{ transform:rotate(180deg); }
+.faq-item.open{ border-color:var(--line-bright); }
+
+/* 步骤 */
+.steps{ display:grid; grid-template-columns:repeat(4,1fr); gap:20px; }
+.step{ text-align:center; }
+.step .sn{ width:40px; height:40px; border-radius:50%; background:linear-gradient(135deg,var(--indigo),var(--indigo-l)); color:#fff; font-weight:700; display:grid; place-items:center; margin:0 auto 12px; box-shadow:0 4px 12px rgba(99,102,241,.25); }
+.step h4{ font-size:.92rem; margin-bottom:5px; color:var(--text); }
+.step p{ font-size:.78rem; color:var(--gray); }
+
+/* 一票否决 */
+.veto{ background:rgba(239,68,68,.05); border:1px solid rgba(239,68,68,.22); border-radius:12px; padding:22px; }
+.veto h4{ color:var(--red); margin-bottom:12px; }
+.veto li{ list-style:none; padding:7px 0 7px 24px; position:relative; font-size:.86rem; color:var(--text); }
+.veto li::before{ content:"✕"; position:absolute; left:0; color:var(--red); font-weight:700; }
+
+/* footer */
+footer{ padding:40px 32px; text-align:center; border-top:1px solid var(--line); color:var(--gray); font-size:.78rem; line-height:1.9; background:var(--card); }
+footer b{ color:var(--indigo); }
+
+/* 响应式 */
+@media(max-width:820px){
+  .nav-links{ display:none; }
+  .g3,.g2{ grid-template-columns:1fr; }
+  .field-row{ grid-template-columns:1fr; }
+  .steps{ grid-template-columns:1fr 1fr; }
+  .dash-grid{ grid-template-columns:1fr; }
+  .stat-mini{ grid-template-columns:1fr 1fr; }
+  .wrap{ padding:0 20px; }
+}
+@media(max-width:680px){
+  .login-brand{ display:none; }
+  .login-box{ max-width:380px; }
+  .login-form-side{ padding:32px 24px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ===== 开场 loader ===== -->
+<div id="intro">
+  <svg class="intro-svg" viewBox="0 0 200 200">
+    <circle class="ring-out" cx="100" cy="100" r="94"/>
+    <circle class="ring-mid" cx="100" cy="100" r="80"/>
+    <circle class="ring-in" cx="100" cy="100" r="64"/>
+    <path class="arc" d="M100 30 A70 70 0 0 1 170 100"/>
+    <g class="tick">
+      <line x1="100" y1="6" x2="100" y2="16"/>
+      <line x1="100" y1="184" x2="100" y2="194"/>
+      <line x1="6" y1="100" x2="16" y2="100"/>
+      <line x1="184" y1="100" x2="194" y2="100"/>
+      <line x1="33" y1="33" x2="40" y2="40"/>
+      <line x1="167" y1="33" x2="160" y2="40"/>
+      <line x1="33" y1="167" x2="40" y2="160"/>
+      <line x1="167" y1="167" x2="160" y2="160"/>
+    </g>
+    <text class="m-core" x="100" y="122">M</text>
+  </svg>
+  <div class="intro-txt">MEOO · 有想法 就秒悟</div>
+</div>
+
+<!-- ===== 导航 ===== -->
+<nav>
+  <div class="wrap nav-in">
+    <div class="brand" onclick="go('home')">
+      <div class="logo-dot">M</div>
+      <div>有想法，就秒悟<small>HENAN AI CHALLENGE</small></div>
+    </div>
+    <div class="nav-links" id="navlinks">
+      <a data-v="home" class="on" onclick="go('home')">首页</a>
+      <a data-v="about" onclick="go('about')">大赛介绍</a>
+      <a data-v="tracks" onclick="go('tracks')">赛道与奖项</a>
+      <a data-v="schedule" onclick="go('schedule')">赛程安排</a>
+      <a data-v="guide" onclick="go('guide')">参赛指南</a>
+      <a data-v="scoring" onclick="go('scoring')">评分标准</a>
+      <a data-v="notices" onclick="go('notices')">通知公告</a>
+      <a data-v="results" onclick="go('results')">成绩公示</a>
+      <a data-v="faq" onclick="go('faq')">常见问题</a>
+      <a onclick="openLogin()">登录</a>
+      <a class="nav-cta" onclick="go('register')">立即报名</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ===================== 首页 ===================== -->
+<div class="view active" id="v-home">
+  <header class="hero">
+    <div class="eyebrow">河南省高校 AI 应用创意挑战赛</div>
+    <span class="tagline">指定创作平台 · 秒悟 Meoo</span>
+    <h1>有想法，就秒悟</h1>
+    <p class="sub">面向全省高校，使用<b>秒悟平台</b>完成 AI 应用创作。<br>个人或团队（2—3人）参赛，三大赛道，线上初审 + 现场路演终审。</p>
+    <div class="countdown" id="cd">
+      <div class="cd-box"><div class="num" id="cd-d">--</div><div class="lbl">天</div></div>
+      <div class="cd-box"><div class="num" id="cd-h">--</div><div class="lbl">时</div></div>
+      <div class="cd-box"><div class="num" id="cd-m">--</div><div class="lbl">分</div></div>
+      <div class="cd-box"><div class="num" id="cd-s">--</div><div class="lbl">秒</div></div>
+    </div>
+    <button class="glitch" data-text="立即报名" onclick="go('register')"><span>立即报名</span></button>
+    <p style="margin-top:18px;font-size:.78rem;color:var(--gray);">距报名截止还剩 <b style="color:var(--indigo)">23</b> 天 · 当前阶段：报名中</p>
+  </header>
+
+  <!-- 三赛道 -->
+  <section class="sec wrap">
+    <div class="center"><div class="sec-eyebrow">THREE TRACKS</div><h2 class="sec-title">三大赛道</h2><p class="sec-sub">选一个最对味的方向，用秒悟把想法变成能跑的应用</p></div>
+    <div class="grid g3">
+      <div class="card-box">
+        <div class="ico" style="background:rgba(99,102,241,.1);color:var(--indigo);">💡</div>
+        <span class="badge" style="background:rgba(99,102,241,.1);color:var(--indigo);">赛道一</span>
+        <h3>Meoo 想天开</h3>
+        <p>AI 互动应用赛道。做有创意、能解决真实痛点的 AI 互动应用，强调功能闭环与落地价值。</p>
+      </div>
+      <div class="card-box">
+        <div class="ico" style="background:rgba(14,165,233,.1);color:var(--cyan);">🎨</div>
+        <span class="badge" style="background:rgba(14,165,233,.1);color:var(--cyan);">赛道二</span>
+        <h3>Meoo 颜爆表</h3>
+        <p>AI 交互与 UI 设计赛道。拼视觉美感、交互流畅度与设计细节，多端适配。</p>
+      </div>
+      <div class="card-box">
+        <div class="ico" style="background:rgba(245,158,11,.12);color:var(--yellow);">📈</div>
+        <span class="badge" style="background:rgba(245,158,11,.12);color:var(--yellow);">赛道三</span>
+        <h3>Meoo 力全开</h3>
+        <p>AI 商业与营销策划赛道。商业逻辑、营销策略与传播声量，附产品原型与传播数据凭证。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 赛程速览 -->
+  <section class="sec wrap">
+    <div class="center"><div class="sec-eyebrow">SCHEDULE</div><h2 class="sec-title">赛程速览</h2></div>
+    <div class="tl">
+      <div class="tl-item done"><div class="tl-date">已开始</div><div><div class="tl-stage">阶段一</div><div class="tl-text">赛事发布 · 报名开放</div></div></div>
+      <div class="tl-item"><div class="tl-date">待定</div><div><div class="tl-stage">阶段二</div><div class="tl-text">报名截止 · 资格审核 · 秒悟子账号发放</div></div></div>
+      <div class="tl-item"><div class="tl-date">待定</div><div><div class="tl-stage">阶段三</div><div class="tl-text">创作期 · 作品提交与形式审核</div></div></div>
+      <div class="tl-item"><div class="tl-date">待定</div><div><div class="tl-stage">阶段四</div><div class="tl-text">线上体验初审 · 生成入围名单</div></div></div>
+      <div class="tl-item"><div class="tl-date">待定</div><div><div class="tl-stage">阶段五</div><div class="tl-text">现场路演终审 · 成绩汇总</div></div></div>
+      <div class="tl-item"><div class="tl-date">待定</div><div><div class="tl-stage">阶段六</div><div class="tl-text">成绩公示 · 异议处理 · 正式结果发布</div></div></div>
+    </div>
+    <div class="center" style="margin-top:30px;"><button class="btn btn-ghost" onclick="go('schedule')">查看完整赛程</button></div>
+  </section>
+
+  <!-- 评分速览 -->
+  <section class="sec wrap">
+    <div class="center"><div class="sec-eyebrow">SCORING</div><h2 class="sec-title">评分速览</h2><p class="sec-sub">百分制 + 综合加分（上限 10 分），各赛道独立评奖</p></div>
+    <div class="grid g3">
+      <div class="card-box"><h3 style="color:var(--indigo)">互动应用赛道</h3><p>创意新颖度 40 · 功能完整性 30 · 实用落地 30</p></div>
+      <div class="card-box"><h3 style="color:var(--cyan)">交互 UI 赛道</h3><p>UI 美感 40 · 交互流畅 30 · 创意细节 30</p></div>
+      <div class="card-box"><h3 style="color:var(--yellow)">商业营销赛道</h3><p>商业逻辑 30 · 营销传播 40 · 产品原型 30</p></div>
+    </div>
+    <div class="center" style="margin-top:24px;"><button class="btn btn-ghost" onclick="go('scoring')">查看评分标准详情</button></div>
+  </section>
+
+  <!-- 最新公告 -->
+  <section class="sec wrap">
+    <div class="center"><div class="sec-eyebrow">NOTICES</div><h2 class="sec-title">最新公告</h2></div>
+    <div class="card-box">
+      <div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--line);">
+        <div><b>关于开启首届"有想法，就秒悟"挑战赛报名的通知</b><div class="hint">赛事通知 · 2026-07-16</div></div>
+        <span class="badge" style="background:rgba(239,68,68,.1);color:var(--red);">置顶</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--line);">
+        <div><b>秒悟平台团队版子账号使用指引</b><div class="hint">培训安排 · 2026-07-14</div></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;padding:12px 0;">
+        <div><b>三大赛道评分标准与一票否决说明</b><div class="hint">规则说明 · 2026-07-12</div></div>
+      </div>
+    </div>
+    <div class="center" style="margin-top:24px;"><button class="btn btn-ghost" onclick="go('notices')">全部公告</button></div>
+  </section>
+
+  <!-- 合作单位 -->
+  <section class="sec wrap">
+    <div class="center"><div class="sec-eyebrow">PARTNERS</div><h2 class="sec-title">组织单位</h2><p class="sec-sub">悬停查看完整信息</p></div>
+    <div class="cards-row">
+      <div class="pcard">
+        <div class="pborder"></div>
+        <div class="plogo"><svg class="pl1" viewBox="0 0 33 33"><rect x="4" y="18" width="5" height="11" fill="#6366f1"/><rect x="14" y="10" width="5" height="19" fill="#6366f1"/><rect x="24" y="4" width="5" height="25" fill="#6366f1"/></svg><span class="pl2">秒悟 Meoo</span><div class="ptrail"></div></div>
+        <div class="pbottom">指定平台</div><div class="ptag">OFFICIAL PLATFORM</div>
+      </div>
+      <div class="pcard">
+        <div class="pborder"></div>
+        <div class="plogo"><svg class="pl1" viewBox="0 0 33 33"><path d="M16.5 3 C10 3 5 8 5 14.5 C5 22 16.5 30 16.5 30 C16.5 30 28 22 28 14.5 C28 8 23 3 16.5 3 Z" stroke="#6366f1" stroke-width="2" fill="none"/><circle cx="16.5" cy="13.5" r="4" fill="#6366f1"/></svg><span class="pl2">承办高校</span><div class="ptrail"></div></div>
+        <div class="pbottom">承办单位</div><div class="ptag">ORGANIZER</div>
+      </div>
+      <div class="pcard">
+        <div class="pborder"></div>
+        <div class="plogo"><svg class="pl1" viewBox="0 0 33 33"><path d="M5 6 L5 27 L16.5 24 L28 27 L28 6 L16.5 9 Z" stroke="#6366f1" stroke-width="2" stroke-linejoin="round" fill="none"/><line x1="16.5" y1="9" x2="16.5" y2="24" stroke="#6366f1" stroke-width="2"/></svg><span class="pl2">省教育厅</span><div class="ptrail"></div></div>
+        <div class="pbottom">指导单位</div><div class="ptag">SUPERVISOR</div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ===================== 大赛介绍 ===================== -->
+<div class="view" id="v-about">
+  <section class="sec wrap" style="padding-top:100px;">
+    <div class="center"><div class="sec-eyebrow">ABOUT</div><h2 class="sec-title">大赛介绍</h2></div>
+    <div class="card-box" style="max-width:820px;margin:0 auto;">
+      <h3 style="margin-bottom:14px;">赛事主题</h3>
+      <p style="color:var(--gray);margin-bottom:24px;">"有想法，就秒悟"——河南省高校 AI 应用创意挑战赛。参赛者使用<b style="color:var(--indigo)">秒悟（Meoo）平台</b>完成 AI 应用创作，作品须包含完整前端界面与后端逻辑，通过秒悟平台发布并提供可正常访问的公网链接。</p>
+      <h3 style="margin-bottom:14px;">项目背景</h3>
+      <p style="color:var(--gray);margin-bottom:24px;">学院拟承办河南省级高校 AI 应用创意挑战赛，面向全省高校及符合条件的参赛人员。官网承担赛事宣传、报名组织、资格审核、账号发放、作品提交、作品审核、评审组织、成绩公示、公告通知和后台管理等职责。</p>
+      <h3 style="margin-bottom:14px;">建设目标</h3>
+      <ul style="color:var(--gray);padding-left:18px;font-size:.88rem;">
+        <li>建立统一、权威的省赛信息发布入口。</li>
+        <li>支撑个人或团队从注册、报名、审核、创作、提交、评审到获奖查询的完整流程。</li>
+        <li>支撑高校联络人了解和管理本校参赛情况。</li>
+        <li>支撑承办单位以较低操作成本完成赛事配置、审核、人员管理、作品管理和成绩公示。</li>
+        <li>在全省集中访问、报名截止和成绩发布等高峰场景下保持稳定可用。</li>
+        <li>保护参赛者个人信息、作品信息、评审数据和后台管理权限。</li>
+      </ul>
+      <h3 style="margin:24px 0 14px;">参赛方式</h3>
+      <p style="color:var(--gray);">支持个人参赛或团队参赛，团队人数建议 2—3 人。报名审核通过后，由赛事方统一发放秒悟团队版子账号。评审采用"线上体验初审 + 现场路演终审"方式。作品须为原创，不得抄袭。</p>
+    </div>
+  </section>
+</div>
+
+<!-- ===================== 赛道与奖项 ===================== -->
+<div class="view" id="v-tracks">
+  <section class="sec wrap" style="padding-top:100px;">
+    <div class="center"><div class="sec-eyebrow">TRACKS &amp; AWARDS</div><h2 class="sec-title">赛道与奖项</h2><p class="sec-sub">三大赛道独立评选，各设一/二/三等奖及第四至十名奖励</p></div>
+    <div class="grid g3">
+      <div class="card-box">
+        <span class="badge" style="background:rgba(99,102,241,.1);color:var(--indigo);">AI 互动应用</span>
+        <h3>Meoo 想天开</h3>
+        <p style="margin-bottom:14px;">核心功能、业务闭环、应用场景和落地价值说明。</p>
+        <div style="font-size:.78rem;color:var(--gray);border-top:1px solid var(--line);padding-top:12px;">评分：创意 40 · 功能 30 · 实用 30</div>
+      </div>
+      <div class="card-box">
+        <span class="badge" style="background:rgba(14,165,233,.1);color:var(--cyan);">AI 交互 UI</span>
+        <h3>Meoo 颜爆表</h3>
+        <p style="margin-bottom:14px;">设计理念、多端适配、交互细节和关键页面展示。</p>
+        <div style="font-size:.78rem;color:var(--gray);border-top:1px solid var(--line);padding-top:12px;">评分：UI 40 · 交互 30 · 创意 30</div>
+      </div>
+      <div class="card-box">
+        <span class="badge" style="background:rgba(245,158,11,.12);color:var(--yellow);">AI 商业营销</span>
+        <h3>Meoo 力全开</h3>
+        <p style="margin-bottom:14px;">营销策划案、商业逻辑、推广策略，附社交平台链接与传播数据凭证。</p>
+        <div style="font-size:.78rem;color:var(--gray);border-top:1px solid var(--line);padding-top:12px;">评分：商业 30 · 营销 40 · 原型 30</div>
+      </div>
+    </div>
+    <h3 style="margin:48px 0 20px;letter-spacing:.05em;">奖项设置</h3>
+    <div class="card-box">
+      <table>
+        <thead><tr><th>奖项</th><th>名额</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr><td>一等奖</td><td>各赛道 1 名</td><td>奖金 + 证书 + 平台权益</td></tr>
+          <tr><td>二等奖</td><td>各赛道 2 名</td><td>奖金 + 证书</td></tr>
+          <tr><td>三等奖</td><td>各赛道 3 名</td><td>奖金 + 证书</td></tr>
+          <tr><td>优秀奖</td><td>各赛道 4—10 名</td><td>证书 + 平台权益</td></tr>
+          <tr><td>综合加分</td><td>—</td><td>社交裂变与内容表达，上限 10 分</td></tr>
+        </tbody>
+      </table>
+      <p class="hint" style="margin-top:12px;">* 名额、奖金、指导教师权益等以组委会最终确认配置为准，不写死在页面中。</p>
+    </div>
+  </section>
+</div>
+
+<!-- ===================== 赛程安排 ===================== -->
+<div class="view" id="v-schedule">
+  <section class="sec wrap" style="padding-top:100px;">
+    <div class="center"><div class="sec-eyebrow">SCHEDULE</div><h2 class="sec-title">赛程安排</h2><p class="sec-sub">所有时间精确到分钟，前台展示倒计时，截止后自动关闭入口</p></div>
+    <div class="tl">
+      <div class="tl-item done"><div class="tl-date">7.16 起</div><div><div class="tl-stage">阶段一 · 报名</div><div class="tl-text">赛事发布、官网上线、报名开放</div></div></div>
+      <div class="tl-item"><div class="tl-date">待定</div><div><div class="tl-stage">阶段二 · 审核</div><div class="tl-text">报名截止 → 资格审核 → 秒悟子账号发放</div></div></div>
+      <div class="tl-item"><div class="tl-date">待定</div><div><div class="tl-stage">阶段三 · 创作</div><div class="tl-text">创作期开始，使用指定子账号在秒悟平台开发</div></div></div>
+      <div class="tl-item"><div class="tl-date">待定</div><div><div class="tl-stage">阶段四 · 提交</div><div class="tl-text">作品提交期：填写信息、上传材料、提交公网链接</div></div></div>
+      <div class="tl-item"><div class="tl-date">待定</div><div><div class="tl-stage">阶段五 · 初审</div><div class="tl-text">线上体验初审，评委按赛道评分，生成入围名单</div></div></div>
+      <div class="tl-item"><div class="tl-date">待定</div><div><div class="tl-stage">阶段六 · 终审</div><div class="tl-text">现场路演（5 分钟展示 + 3 分钟问答），终审评分</div></div></div>
+      <div class="tl-item"><div class="tl-date">待定</div><div><div class="tl-stage">阶段七 · 公示</div><div class="tl-text">成绩公示、异议处理、正式结果发布与归档</div></div></div>
+    </div>
+    <div class="card-box" style="margin-top:36px;max-width:720px;margin-left:auto;margin-right:auto;">
+      <h3 style="margin-bottom:10px;">时间规则说明</h3>
+      <ul style="color:var(--gray);font-size:.84rem;padding-left:18px;">
+        <li>所有时间展示明确时区，以统一系统时间为准。</li>
+        <li>到达截止时间后系统自动关闭提交入口，不依赖人工。</li>
+        <li>截止瞬间并发提交，以系统接收时间和明确规则判定成功。</li>
+        <li>延期可对全体/指定赛道/指定单位/经批准的个别团队生效。</li>
+        <li>管理员修改时间须填写变更原因，并同步全站与通知。</li>
+      </ul>
+    </div>
+  </section>
+</div>
+
+<!-- ===================== 参赛指南 ===================== -->
+<div class="view" id="v-guide">
+  <section class="sec wrap" style="padding-top:100px;">
+    <div class="center"><div class="sec-eyebrow">GUIDE</div><h2 class="sec-title">参赛指南</h2></div>
+
+    <h3 style="margin-bottom:20px;">报名流程</h3>
+    <div class="steps" style="margin-bottom:48px;">
+      <div class="step"><div class="sn">1</div><h4>注册登录</h4><p>手机号注册，完成身份验证与协议确认</p></div>
+      <div class="step"><div class="sn">2</div><h4>创建团队</h4><p>个人或团队参赛，设置负责人，邀请成员</p></div>
+      <div class="step"><div class="sn">3</div><h4>填写报名</h4><p>选赛道、填资料、签承诺、提交报名表</p></div>
+      <div class="step"><div class="sn">4</div><h4>领取账号</h4><p>审核通过后领取秒悟团队版子账号</p></div>
+    </div>
+
+    <h3 style="margin-bottom:20px;">作品提交要求</h3>
+    <div class="card-box" style="margin-bottom:36px;">
+      <p style="color:var(--gray);margin-bottom:14px;font-size:.88rem;">通用作品信息至少包含：</p>
+      <ul style="color:var(--gray);font-size:.84rem;padding-left:18px;">
+        <li>作品名称、所属赛道、作品摘要、目标用户和解决的问题</li>
+        <li>秒悟应用<b style="color:var(--indigo)">公网访问链接</b></li>
+        <li>秒悟指定子账号或应用归属证明</li>
+        <li>封面图、应用截图或演示材料</li>
+        <li>操作说明、测试账号及注意事项（如需登录）</li>
+        <li>演示视频链接或文件（如赛事要求）</li>
+        <li>团队分工说明 + 原创/知识产权/数据合规承诺</li>
+      </ul>
+      <p class="hint" style="margin-top:12px;">提交功能：草稿自动保存、完整性校验、多版本保留、截止前可撤回修改、提交成功生成作品编号与时间凭证。</p>
+    </div>
+
+    <h3 style="margin-bottom:20px;">一票否决（无效作品情形）</h3>
+    <div class="veto" style="margin-bottom:36px;">
+      <h4>⚠ 出现以下情形可判为无效作品</h4>
+      <li>未使用审核通过后统一发放的指定子账号创作</li>
+      <li>不具备完整前端和后端逻辑，仅为静态页面或本地演示</li>
+      <li>未通过秒悟平台部署，或未提交可访问的公网链接</li>
+      <li>存在抄袭、严重侵权、违法违规或虚假材料</li>
+      <p class="hint" style="margin-top:12px;">审核员须逐项勾选并填写证据，不得只保留"无效"结论。被判无效可申请复核与申诉。</p>
+    </div>
+
+    <h3 style="margin-bottom:20px;">作品状态流转</h3>
+    <div class="card-box">
+      <p style="color:var(--gray);font-size:.84rem;">未创建 → 草稿 → 待提交 → 已提交/待审核 → 退回修改 / 审核通过(有效) / 审核不通过(无效) → 初审中 → 已入围/未入围 → 终审中 → 待公示 → 公示中 → 获奖/未获奖 / 资格取消</p>
+      <p class="hint" style="margin-top:10px;">每次状态变化记录操作人、时间、前后状态、原因和通知结果。</p>
+    </div>
+  </section>
+</div>
+
+<!-- ===================== 评分标准 ===================== -->
+<div class="view" id="v-scoring">
+  <section class="sec wrap" style="padding-top:100px;">
+    <div class="center"><div class="sec-eyebrow">SCORING</div><h2 class="sec-title">评分标准</h2><p class="sec-sub">百分制 + 综合加分（上限 10 分），评分项后台可配置</p></div>
+    <div class="card-box" style="margin-bottom:24px;">
+      <h3 style="color:var(--indigo);margin-bottom:14px;">赛道一 · Meoo 想天开（AI 互动应用）</h3>
+      <table>
+        <thead><tr><th>评分项</th><th>分值</th></tr></thead>
+        <tbody><tr><td>创意新颖度与痛点切入</td><td>40</td></tr><tr><td>功能完整性与逻辑性</td><td>30</td></tr><tr><td>实用性与落地潜力</td><td>30</td></tr></tbody>
+      </table>
+    </div>
+    <div class="card-box" style="margin-bottom:24px;">
+      <h3 style="color:var(--cyan);margin-bottom:14px;">赛道二 · Meoo 颜爆表（AI 交互与 UI 设计）</h3>
+      <table>
+        <thead><tr><th>评分项</th><th>分值</th></tr></thead>
+        <tbody><tr><td>UI 设计美感与视觉一致性</td><td>40</td></tr><tr><td>交互体验与流畅度</td><td>30</td></tr><tr><td>创意表达与细节打磨</td><td>30</td></tr></tbody>
+      </table>
+    </div>
+    <div class="card-box" style="margin-bottom:24px;">
+      <h3 style="color:var(--yellow);margin-bottom:14px;">赛道三 · Meoo 力全开（AI 商业与营销策划）</h3>
+      <table>
+        <thead><tr><th>评分项</th><th>分值</th></tr></thead>
+        <tbody><tr><td>商业逻辑与市场可行性</td><td>30</td></tr><tr><td>营销策略与传播声量</td><td>40</td></tr><tr><td>产品原型与体验</td><td>30</td></tr></tbody>
+      </table>
+    </div>
+    <div class="card-box" style="border-color:rgba(245,158,11,.3);">
+      <h3 style="color:var(--yellow);margin-bottom:10px;">综合加分（上限 10 分）</h3>
+      <p style="color:var(--gray);font-size:.86rem;">社交裂变与内容表达等加分项。是否适用于全部赛道及最终计分方式由组委会确认。</p>
+    </div>
+    <p class="hint" style="margin-top:16px;">评分功能：分项打分、总分自动计算、必填评语、分值范围与异常分差提示、暂存草稿、提交后锁定、评委间评分结束前互不可见。</p>
+  </section>
+</div>
+
+<!-- ===================== 通知公告 ===================== -->
+<div class="view" id="v-notices">
+  <section class="sec wrap" style="padding-top:100px;">
+    <div class="center"><div class="sec-eyebrow">NOTICES</div><h2 class="sec-title">通知公告</h2></div>
+    <div class="card-box">
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid var(--line);"><div><b>关于开启首届"有想法，就秒悟"挑战赛报名的通知</b><div class="hint">赛事通知 · 2026-07-16</div></div><span class="badge" style="background:rgba(239,68,68,.1);color:var(--red);">置顶</span></div>
+      <div style="display:flex;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--line);"><div><b>秒悟平台团队版子账号使用指引</b><div class="hint">培训安排 · 2026-07-14</div></div><span class="badge" style="background:rgba(99,102,241,.1);color:var(--indigo);">培训</span></div>
+      <div style="display:flex;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--line);"><div><b>三大赛道评分标准与一票否决说明</b><div class="hint">规则说明 · 2026-07-12</div></div></div>
+      <div style="display:flex;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--line);"><div><b>关于团队参赛人数与跨校组队的说明</b><div class="hint">规则说明 · 2026-07-10</div></div></div>
+      <div style="display:flex;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--line);"><div><b>常见问题汇总（持续更新）</b><div class="hint">常见问题 · 2026-07-08</div></div></div>
+      <div style="display:flex;justify-content:space-between;padding:14px 0;"><div><b>隐私政策与参赛承诺书</b><div class="hint">系统通知 · 2026-07-05</div></div></div>
+    </div>
+  </section>
+</div>
+
+<!-- ===================== 成绩公示 ===================== -->
+<div class="view" id="v-results">
+  <section class="sec wrap" style="padding-top:100px;">
+    <div class="center"><div class="sec-eyebrow">RESULTS</div><h2 class="sec-title">成绩公示</h2><p class="sec-sub">仅公开必要信息，不含手机号、学号等敏感字段</p></div>
+    <div class="card-box">
+      <p style="color:var(--gray);margin-bottom:18px;font-size:.86rem;">当前阶段：<b style="color:var(--indigo)">尚未进入公示期</b>。以下为公示字段示例（拟获奖名单发布后展示）。</p>
+      <table>
+        <thead><tr><th>赛道</th><th>奖项</th><th>作品名称</th><th>团队名称</th><th>学校</th></tr></thead>
+        <tbody>
+          <tr><td>互动应用</td><td>一等奖</td><td>—</td><td>—</td><td>—</td></tr>
+          <tr><td>交互 UI</td><td>一等奖</td><td>—</td><td>—</td><td>—</td></tr>
+          <tr><td>商业营销</td><td>一等奖</td><td>—</td><td>—</td><td>—</td></tr>
+        </tbody>
+      </table>
+      <p class="hint" style="margin-top:14px;">公示期可提交异议、说明和证据；异议处理过程仅对申请人和授权人员可见。</p>
+    </div>
+  </section>
+</div>
+
+<!-- ===================== 常见问题 ===================== -->
+<div class="view" id="v-faq">
+  <section class="sec wrap" style="padding-top:100px;">
+    <div class="center"><div class="sec-eyebrow">FAQ</div><h2 class="sec-title">常见问题</h2></div>
+    <div style="max-width:760px;margin:0 auto;">
+      <div class="faq-item"><div class="faq-q">可以个人参赛吗？团队几个人？<span class="arrow">▾</span></div><div class="faq-a"><div>支持个人参赛或团队参赛，现有材料建议团队人数为 2—3 人。是否允许跨校组队由组委会配置确认。</div></div></div>
+      <div class="faq-item"><div class="faq-q">秒悟子账号怎么领取？<span class="arrow">▾</span></div><div class="faq-a"><div>报名审核通过后，由赛事方统一发放秒悟团队版子账号。负责人在个人中心领取入口查看，首次查看需身份确认。子账号信息仅对负责人或授权成员展示。</div></div></div>
+      <div class="faq-item"><div class="faq-q">作品必须上线吗？静态页面行不行？<span class="arrow">▾</span></div><div class="faq-a"><div>作品须包含完整前端界面与后端逻辑，须通过秒悟平台发布并提供可正常访问的公网链接。仅有静态页面或本地演示的作品属于一票否决情形。</div></div></div>
+      <div class="faq-item"><div class="faq-q">报名截止后还能改成员或换赛道吗？<span class="arrow">▾</span></div><div class="faq-a"><div>报名截止后原则上不允许新增成员或更换赛道。特殊变更须提交原因和证明，经授权人员审核，且不覆盖历史报名信息和承诺记录。</div></div></div>
+      <div class="faq-item"><div class="faq-q">评审怎么进行？能看到其他评委分数吗？<span class="arrow">▾</span></div><div class="faq-a"><div>评审采用"线上体验初审 + 现场路演终审"。路演规则如"5 分钟展示 + 3 分钟问答"。评委在评审结束前互不可见分数，不得查看与评审无关的参赛者敏感信息。</div></div></div>
+      <div class="faq-item"><div class="faq-q">对成绩有异议怎么办？<span class="arrow">▾</span></div><div class="faq-a"><div>可在公示期规定时间内提交异议、说明和证据。后台受理、分派、补充材料、复核并办结，结果按规则反馈。处理过程仅对申请人和授权人员可见。</div></div></div>
+    </div>
+  </section>
+</div>
+
+<!-- ===================== 报名页 ===================== -->
+<div class="view" id="v-register">
+  <section class="sec wrap" style="padding-top:100px;">
+    <div class="center"><div class="sec-eyebrow">REGISTRATION</div><h2 class="sec-title">立即报名</h2><p class="sec-sub">填写报名信息 · 签署承诺 · 提交审核</p></div>
+    <div style="max-width:620px;margin:0 auto;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:40px;position:relative;overflow:hidden;box-shadow:0 4px 24px rgba(99,102,241,.06);">
+      <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--indigo),var(--indigo-l));border-radius:16px 16px 0 0;"></div>
+
+      <!-- 参赛类型 -->
+      <div class="field">
+        <label>参赛类型 <span class="req">*</span></label>
+        <div style="display:flex;gap:12px;">
+          <label style="flex:1;padding:14px;border:1px solid var(--line);border-radius:9px;cursor:pointer;text-align:center;font-size:.86rem;background:#fff;color:var(--text);" class="type-opt on" data-t="team"><input type="radio" name="type" checked style="display:none;">团队参赛（2—3人）</label>
+          <label style="flex:1;padding:14px;border:1px solid var(--line);border-radius:9px;cursor:pointer;text-align:center;font-size:.86rem;background:#fff;color:var(--gray);" class="type-opt" data-t="solo"><input type="radio" name="type" style="display:none;">个人参赛</label>
+        </div>
+      </div>
+
+      <div class="field-row">
+        <div class="field"><label>团队名称 <span class="req">*</span></label><input type="text" placeholder="如：秒悟先锋队"></div>
+        <div class="field"><label>参赛赛道 <span class="req">*</span></label><select><option>请选择赛道</option><option>Meoo 想天开 — AI 互动应用</option><option>Meoo 颜爆表 — AI 交互与 UI 设计</option><option>Meoo 力全开 — AI 商业与营销策划</option></select></div>
+      </div>
+      <div class="field"><label>参赛单位（学校）<span class="req">*</span></label><input type="text" placeholder="请输入学校全称"></div>
+      <div class="field-row">
+        <div class="field"><label>负责人姓名 <span class="req">*</span></label><input type="text"></div>
+        <div class="field"><label>学号 <span class="req">*</span></label><input type="text"></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>手机号 <span class="req">*</span></label><input type="text"></div>
+        <div class="field"><label>邮箱 <span class="req">*</span></label><input type="email"></div>
+      </div>
+      <div class="field"><label>项目/创意名称 <span class="req">*</span></label><input type="text" placeholder="一句话讲清你的想法"></div>
+      <div class="field"><label>简要介绍与拟解决问题</label><textarea placeholder="描述你的创意、目标用户和预期形式"></textarea></div>
+      <div class="hint" style="margin-bottom:22px;">草稿自动保存。报名表完整字段（成员信息、指导教师、资格证明等）以组委会最终配置为准。</div>
+
+      <!-- 进度 -->
+      <div class="progress-bar">
+        <div class="progress-track"><div class="progress-fill" id="pf"></div></div>
+        <span class="progress-text"><span class="progress-count" id="pc">0</span>/6 已完成</span>
+      </div>
+
+      <!-- 条款开关 -->
+      <input type="checkbox" id="checkbox-on">
+      <div class="position-container">
+        <label for="checkbox-on" class="control-element">
+          <div class="switch-wrap">
+            <span class="svg-switch-container"><svg class="switch-svg" viewBox="0 0 180 64" width="100%"><rect class="track-sw" x="2" y="2" width="176" height="60" rx="30"/><text class="label-off" x="108" y="40" text-anchor="middle">未同意</text><text class="label-on" x="52" y="40" text-anchor="middle">已同意</text><circle class="knob" cx="34" cy="32" r="22"/></svg></span>
+            <span style="font-size:.84rem;color:var(--gray);">我已阅读并同意报名条款</span>
+          </div>
+        </label>
+      </div>
+
+      <!-- 确认清单 -->
+      <div class="checkbox-btn"><input type="checkbox" id="ck1" class="confirm-ck"><label for="ck1">团队信息已填写完整（队名、成员、指导教师）</label><span class="checkmark"></span></div>
+      <div class="checkbox-btn"><input type="checkbox" id="ck2" class="confirm-ck"><label for="ck2">所有成员已知情并同意参赛</label><span class="checkmark"></span></div>
+      <div class="checkbox-btn"><input type="checkbox" id="ck3" class="confirm-ck"><label for="ck3">作品为团队原创，未抄袭，使用合法素材</label><span class="checkmark"></span></div>
+      <div class="checkbox-btn"><input type="checkbox" id="ck4" class="confirm-ck"><label for="ck4">知悉作品须通过秒悟平台发布并提供公网链接</label><span class="checkmark"></span></div>
+      <div class="checkbox-btn"><input type="checkbox" id="ck5" class="confirm-ck"><label for="ck5">同意接收赛事进度通知及评审反馈</label><span class="checkmark"></span></div>
+
+      <p style="font-size:.76rem;color:var(--gray);line-height:1.7;margin:18px 0 24px;">提交即视为同意 <a href="#">《报名条款》</a> 及 <a href="#">《数据使用与隐私协议》</a>，知悉一票否决情形。</p>
+
+      <button class="btn btn-pri" id="submitBtn" style="width:100%;padding:16px;font-size:18px;letter-spacing:.2em;text-indent:.2em;cursor:not-allowed;opacity:.55;" onclick="submitForm()"><span>提交报名</span></button>
+      <p class="hint" id="submitHint" style="text-align:center;margin-top:12px;">勾选条款并完成全部确认后按钮激活</p>
+    </div>
+  </section>
+</div>
+
+<!-- ===================== 个人中心 ===================== -->
+<div class="view" id="v-dashboard">
+  <section class="sec wrap" style="padding-top:90px;">
+    <div class="dash-grid">
+      <aside class="dash-side">
+        <div class="uinfo">
+          <div class="ava">李</div>
+          <div style="font-weight:600;">李同学</div>
+          <div class="hint">团队负责人</div>
+        </div>
+        <a class="on" onclick="dashTab(this,'todo')">待办事项</a>
+        <a onclick="dashTab(this,'team')">我的团队</a>
+        <a onclick="dashTab(this,'reg')">我的报名</a>
+        <a onclick="dashTab(this,'account')">秒悟子账号</a>
+        <a onclick="dashTab(this,'work')">我的作品</a>
+        <a onclick="dashTab(this,'notice')">我的通知</a>
+        <a onclick="dashTab(this,'score')">成绩与排名</a>
+      </aside>
+      <div>
+        <div class="stat-mini">
+          <div class="sm"><div class="n">1</div><div class="l">报名团队</div></div>
+          <div class="sm"><div class="n">已通过</div><div class="l">审核状态</div></div>
+          <div class="sm"><div class="n">1</div><div class="l">作品提交</div></div>
+          <div class="sm"><div class="n">2</div><div class="l">未读通知</div></div>
+        </div>
+
+        <div id="dash-todo">
+          <h3 style="margin-bottom:16px;">待办事项</h3>
+          <div class="todo"><div class="td-ico">🔔</div><div class="td-t">秒悟子账号待领取</div><div class="td-a"><button class="btn btn-ghost" style="padding:6px 14px;font-size:.78rem;" onclick="dashTab(document.querySelectorAll('.dash-side a')[3],'account')">去领取</button></div></div>
+          <div class="todo" style="background:rgba(99,102,241,.05);border-color:rgba(99,102,241,.2);"><div class="td-ico">📝</div><div class="td-t">作品尚未提交（创作期进行中）</div><div class="td-a"><button class="btn btn-ghost" style="padding:6px 14px;font-size:.78rem;" onclick="dashTab(document.querySelectorAll('.dash-side a')[4],'work')">去提交</button></div></div>
+          <div class="todo" style="background:rgba(14,165,233,.05);border-color:rgba(14,165,233,.2);"><div class="td-ico">👥</div><div class="td-t">1 名团队成员待确认身份</div><div class="td-a"><button class="btn btn-ghost" style="padding:6px 14px;font-size:.78rem;" onclick="dashTab(document.querySelectorAll('.dash-side a')[1],'team')">查看</button></div></div>
+        </div>
+        <div id="dash-team" style="display:none;">
+          <h3 style="margin-bottom:16px;">我的团队</h3>
+          <div class="card-box"><h3>秒悟先锋队</h3><p style="color:var(--gray);margin-bottom:14px;">赛道：AI 互动应用 · 学校：示例大学</p>
+            <table><thead><tr><th>成员</th><th>角色</th><th>确认状态</th></tr></thead><tbody><tr><td>李同学</td><td>负责人</td><td>已确认</td></tr><tr><td>王同学</td><td>成员</td><td>已确认</td></tr><tr><td>张同学</td><td>成员</td><td style="color:var(--yellow)">待确认</td></tr></tbody></table>
+          </div>
+        </div>
+        <div id="dash-account" style="display:none;">
+          <h3 style="margin-bottom:16px;">秒悟子账号</h3>
+          <div class="card-box" style="border-color:rgba(99,102,241,.3);"><h3 style="color:var(--indigo);">子账号待领取</h3><p style="color:var(--gray);margin-bottom:16px;">您的报名已审核通过，请领取秒悟团队版子账号。首次查看需身份确认，账号信息仅您可见。</p><button class="btn btn-pri" onclick="alert('已记录领取时间')">立即领取</button></div>
+        </div>
+        <div id="dash-work" style="display:none;">
+          <h3 style="margin-bottom:16px;">我的作品</h3>
+          <div class="card-box"><h3>未创建作品</h3><p style="color:var(--gray);margin-bottom:16px;">创作期进行中，审核通过后可创建并提交作品。作品须通过秒悟平台发布并提供公网链接。</p><button class="btn btn-pri">创建作品</button></div>
+        </div>
+        <div id="dash-reg" style="display:none;"><h3 style="margin-bottom:16px;">我的报名</h3><div class="card-box"><p>报名编号：<b style="color:var(--indigo)">MEOO-2026-0001</b></p><p>状态：<b style="color:var(--indigo)">审核通过</b></p><p>赛道：AI 互动应用</p><p>提交时间：2026-07-16</p></div></div>
+        <div id="dash-notice" style="display:none;"><h3 style="margin-bottom:16px;">我的通知</h3><div class="card-box"><div style="padding:10px 0;border-bottom:1px solid var(--line);"><b>报名审核已通过</b><div class="hint">系统通知 · 请领取子账号</div></div><div style="padding:10px 0;"><b>创作期已开始</b><div class="hint">赛事通知</div></div></div></div>
+        <div id="dash-score" style="display:none;"><h3 style="margin-bottom:16px;">成绩与排名</h3><div class="card-box"><p style="color:var(--gray);">当前阶段尚未进入评审，成绩待初审/终审完成后展示。</p></div></div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ===== 提交加载态 ===== -->
+<div id="submit-overlay">
+  <div class="scene"><div class="cube"><div class="face top"></div><div class="face right"></div><div class="face front"></div><div class="face back"></div></div></div>
+  <div class="ov-text">报名提交中</div><div class="ov-sub">请勿关闭页面</div>
+</div>
+<div id="success">
+  <div class="s-check"><svg viewBox="0 0 48 48"><path d="M12 24 L20 32 L36 14" fill="none" stroke="#6366f1" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+  <div class="s-title">报名提交成功</div>
+  <p class="s-sub">报名编号：<b style="color:var(--indigo)">MEOO-2026-0001</b><br>审核结果将在个人中心通知，请留意待办事项。</p>
+</div>
+
+<!-- ===== 登录 modal ===== -->
+<div id="login-modal">
+  <div class="login-box">
+    <!-- 秒悟品牌区 -->
+    <div class="login-brand">
+      <div>
+        <div class="b-logo">M</div>
+        <div class="b-name">秒悟 Meoo</div>
+        <div class="b-en">MEOO PLATFORM</div>
+      </div>
+      <div class="b-slogan">
+        <b>有想法，<br><span>就秒悟</span></b>
+        <small>河南省高校 AI 应用创意挑战赛<br>指定创作平台 · 用 AI 把灵感变成应用</small>
+      </div>
+    </div>
+    <!-- 表单区 -->
+    <div class="login-form-side">
+      <button class="modal-close" onclick="closeLogin()">✕</button>
+      <div class="tabs"><div class="tab on" onclick="loginTab(this,1)">登录</div><div class="tab" onclick="loginTab(this,2)">注册</div></div>
+      <div id="login-form">
+        <div class="field"><label>手机号</label><input type="text" placeholder="请输入手机号"></div>
+        <div class="field"><label>密码</label><input type="password" placeholder="请输入密码"></div>
+        <div style="display:flex;justify-content:space-between;font-size:.78rem;margin-bottom:18px;"><a>忘记密码？</a><a>联系方式变更</a></div>
+        <button class="btn btn-pri" style="width:100%;" onclick="closeLogin();go('dashboard')">登录</button>
+        <p class="hint" style="margin-top:12px;text-align:center;">登录即同意《用户协议》与《隐私政策》</p>
+      </div>
+      <div id="reg-form" style="display:none;">
+        <div class="field"><label>手机号</label><input type="text" placeholder="用于注册和登录"></div>
+        <div class="field"><label>验证码</label><div style="display:flex;gap:10px;"><input type="text" placeholder="6 位验证码" style="flex:1;"><button class="btn btn-ghost" style="padding:11px 16px;font-size:.78rem;">获取</button></div></div>
+        <div class="field"><label>设置密码</label><input type="password"></div>
+        <button class="btn btn-pri" style="width:100%;" onclick="closeLogin();go('dashboard')">注册并登录</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <b>河南省"有想法，就秒悟"高校 AI 应用创意挑战赛</b><br>
+  指定创作平台：秒悟 Meoo · 线上初审 + 现场路演终审<br>
+  © 2026 官网功能需求 V1.0 · 前端原型
+</footer>
+
+<script>
+// ===== 开场 loader =====
+window.addEventListener('load',function(){ setTimeout(function(){ document.getElementById('intro').classList.add('hide'); },2000); });
+
+// ===== 视图切换 =====
+function go(v){
+  document.querySelectorAll('.view').forEach(function(e){ e.classList.remove('active'); });
+  var el=document.getElementById('v-'+v); if(el) el.classList.add('active');
+  document.querySelectorAll('#navlinks a[data-v]').forEach(function(a){ a.classList.toggle('on', a.getAttribute('data-v')===v); });
+  window.scrollTo(0,0);
+}
+
+// ===== 倒计时（示例：23天后）=====
+(function(){
+  var end=new Date(); end.setDate(end.getDate()+23); end.setHours(23,59,59);
+  function tick(){
+    var d=new Date(end-new Date());
+    document.getElementById('cd-d').textContent=Math.floor(d/86400000);
+    document.getElementById('cd-h').textContent=Math.floor(d%86400000/3600000);
+    document.getElementById('cd-m').textContent=Math.floor(d%3600000/60000);
+    document.getElementById('cd-s').textContent=Math.floor(d%60000/1000);
+  }
+  tick(); setInterval(tick,1000);
+})();
+
+// ===== 报名联动 =====
+var termsCk=document.getElementById('checkbox-on');
+var cks=document.querySelectorAll('.confirm-ck');
+var btn=document.getElementById('submitBtn');
+var hint=document.getElementById('submitHint');
+var pf=document.getElementById('pf'), pc=document.getElementById('pc');
+function refresh(){
+  var n=document.querySelectorAll('.confirm-ck:checked').length;
+  var t=termsCk.checked?1:0; var done=n+t;
+  pf.style.width=(done/6*100)+'%'; pc.textContent=done;
+  var ready=termsCk.checked && n===cks.length;
+  if(ready){ btn.style.cursor='pointer'; btn.style.opacity=1; hint.textContent='提交就绪，点击提交报名'; hint.style.color='var(--indigo)'; }
+  else{ btn.style.cursor='not-allowed'; btn.style.opacity=.55; hint.textContent='勾选条款并完成全部确认后按钮激活'; hint.style.color=''; }
+}
+termsCk.addEventListener('change',refresh);
+cks.forEach(function(c){ c.addEventListener('change',refresh); });
+function submitForm(){
+  if(btn.style.cursor!=='pointer') return;
+  document.getElementById('submit-overlay').classList.add('show');
+  setTimeout(function(){ document.getElementById('submit-overlay').classList.remove('show'); document.getElementById('success').classList.add('show'); },2600);
+}
+document.getElementById('success').addEventListener('click',function(){ this.classList.remove('show'); go('dashboard'); });
+
+// 参赛类型选择
+document.querySelectorAll('.type-opt').forEach(function(o){ o.addEventListener('click',function(){
+  document.querySelectorAll('.type-opt').forEach(function(x){ x.classList.remove('on'); x.style.borderColor='var(--line)'; x.style.background='#fff'; x.style.color='var(--gray)'; });
+  o.classList.add('on'); o.style.borderColor='var(--indigo)'; o.style.color='var(--indigo)'; o.style.background='rgba(99,102,241,.05)';
+}); });
+
+// ===== 个人中心 tab =====
+function dashTab(a,id){
+  document.querySelectorAll('.dash-side a').forEach(function(x){ x.classList.remove('on'); });
+  a.classList.add('on');
+  ['todo','team','reg','account','work','notice','score'].forEach(function(t){ document.getElementById('dash-'+t).style.display=(t===id?'block':'none'); });
+}
+
+// ===== 登录 modal =====
+function openLogin(){ document.getElementById('login-modal').classList.add('show'); }
+function closeLogin(){ document.getElementById('login-modal').classList.remove('show'); }
+function loginTab(el,n){
+  document.querySelectorAll('.tab').forEach(function(t){ t.classList.remove('on'); }); el.classList.add('on');
+  document.getElementById('login-form').style.display=n===1?'block':'none';
+  document.getElementById('reg-form').style.display=n===2?'block':'none';
+}
+
+// ===== FAQ =====
+document.querySelectorAll('.faq-q').forEach(function(q){ q.addEventListener('click',function(){ q.parentElement.classList.toggle('open'); }); });
+</script>
+</body>
+</html>

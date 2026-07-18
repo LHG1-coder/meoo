@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>报名页加载态</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      background: #0f0f14;
+      color: #fff;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+        "Microsoft YaHei", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+
+    .loading-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 28px;
+      padding: 48px 56px;
+    }
+
+    .loader {
+      perspective: 1000px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .boxes {
+      --size: 36px;
+      --duration: 800ms;
+      height: calc(var(--size) * 2);
+      width: calc(var(--size) * 3);
+      position: relative;
+      transform-style: preserve-3d;
+      transform-origin: 50% 50%;
+      margin-top: calc(var(--size) * 1.5 * -1);
+      transform: rotateX(60deg) rotateZ(45deg) rotateY(0deg) translateZ(0px);
+    }
+
+    .boxes .box {
+      width: var(--size);
+      height: var(--size);
+      top: 0;
+      left: 0;
+      position: absolute;
+      transform-style: preserve-3d;
+    }
+
+    .boxes .box:nth-child(1) {
+      transform: translate(100%, 0);
+      animation: box1 var(--duration) linear infinite;
+    }
+
+    .boxes .box:nth-child(2) {
+      transform: translate(0, 100%);
+      animation: box2 var(--duration) linear infinite;
+    }
+
+    .boxes .box:nth-child(3) {
+      transform: translate(100%, 100%);
+      animation: box3 var(--duration) linear infinite;
+    }
+
+    .boxes .box:nth-child(4) {
+      transform: translate(200%, 0);
+      animation: box4 var(--duration) linear infinite;
+    }
+
+    /* 报名页 cyberpunk 配色：红主 + 青辅 + 暗红体积 */
+    .boxes .box > div {
+      --background: #ff013c;          /* 顶面：报名红 */
+      --top: auto;
+      --right: auto;
+      --bottom: auto;
+      --left: auto;
+      --translateZ: calc(var(--size) / 2);
+      --rotateY: 0deg;
+      --rotateX: 0deg;
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: var(--background);
+      top: var(--top);
+      right: var(--right);
+      bottom: var(--bottom);
+      left: var(--left);
+      transform: rotateY(var(--rotateY)) rotateX(var(--rotateX)) translateZ(var(--translateZ));
+    }
+
+    .boxes .box > div:nth-child(1) {
+      --top: 0;
+      --left: 0;
+    }
+
+    .boxes .box > div:nth-child(2) {
+      --background: #00e6f6;          /* 右面：故障青 */
+      --right: 0;
+      --rotateY: 90deg;
+    }
+
+    .boxes .box > div:nth-child(3) {
+      --background: #c70031;          /* 前面：暗红体积面 */
+      --rotateX: -90deg;
+    }
+
+    .boxes .box > div:nth-child(4) {
+      --background: #2a0a14;          /* 远底面：融入深色背景 */
+      --top: 0;
+      --left: 0;
+      --translateZ: calc(var(--size) * 3 * -1);
+    }
+
+    @keyframes box1 {
+      0%, 50% { transform: translate(100%, 0); }
+      100% { transform: translate(200%, 0); }
+    }
+    @keyframes box2 {
+      0% { transform: translate(0, 100%); }
+      50% { transform: translate(0, 0); }
+      100% { transform: translate(100%, 0); }
+    }
+    @keyframes box3 {
+      0%, 50% { transform: translate(100%, 100%); }
+      100% { transform: translate(0, 100%); }
+    }
+    @keyframes box4 {
+      0% { transform: translate(200%, 0); }
+      50% { transform: translate(200%, 100%); }
+      100% { transform: translate(100%, 100%); }
+    }
+
+    .loading-text {
+      margin: 0;
+      font-size: 15px;
+      letter-spacing: 0.25em;
+      color: #00e6f6;
+      text-indent: 0.25em;
+      animation: blink 1.2s ease-in-out infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.45; }
+    }
+
+    .loading-sub {
+      margin: 0;
+      font-size: 12px;
+      letter-spacing: 0.1em;
+      color: #5a5a6a;
+    }
+  </style>
+</head>
+<body>
+  <div class="loading-card">
+    <div class="loader">
+      <div class="boxes">
+        <div class="box"><div></div><div></div><div></div><div></div></div>
+        <div class="box"><div></div><div></div><div></div><div></div></div>
+        <div class="box"><div></div><div></div><div></div><div></div></div>
+        <div class="box"><div></div><div></div><div></div><div></div></div>
+      </div>
+    </div>
+    <p class="loading-text">报名提交中</p>
+    <p class="loading-sub">请勿关闭页面</p>
+  </div>
+</body>
+</html>
