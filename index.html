@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>秒悟 Meoo · 有想法，就秒悟</title>
+<meta http-equiv="refresh" content="1.4; url=meoo_contest.html">
+<style>
+  :root{
+    --bg:#f6f7fb; --card:#fff; --line:#e4e5ee;
+    --text:#1a1a2e; --gray:#6b6b80;
+    --indigo:#6366f1; --indigo-l:#818cf8; --indigo-d:#4338ca;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    display:flex;align-items:center;justify-content:center;
+    overflow:hidden;
+  }
+  body::before{
+    content:"";position:fixed;inset:0;z-index:0;
+    background:
+      radial-gradient(620px circle at 18% 22%, rgba(99,102,241,.10), transparent 60%),
+      radial-gradient(560px circle at 82% 78%, rgba(129,140,248,.08), transparent 60%);
+  }
+  .wrap{position:relative;z-index:1;text-align:center}
+  .logo{
+    width:84px;height:84px;margin:0 auto 26px;
+    border-radius:22px;
+    background:linear-gradient(135deg,var(--indigo),var(--indigo-d));
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:0 18px 40px -12px rgba(99,102,241,.55);
+    position:relative;
+  }
+  .logo span{
+    font-size:46px;font-weight:800;color:#fff;letter-spacing:-1px;
+    font-family:"Segoe UI",Arial,sans-serif;
+  }
+  .logo::after{
+    content:"";position:absolute;inset:-6px;border-radius:26px;
+    border:2px solid rgba(99,102,241,.22);
+  }
+  .ring{
+    position:absolute;inset:-14px;border-radius:50%;
+    border:2px solid transparent;border-top-color:var(--indigo);
+    border-right-color:var(--indigo-l);
+    animation:spin 1s linear infinite;
+  }
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .brand{font-size:22px;font-weight:700;letter-spacing:.5px}
+  .brand b{color:var(--indigo)}
+  .slogan{margin-top:8px;font-size:14px;color:var(--gray)}
+  .dots{margin-top:22px;display:flex;gap:7px;justify-content:center}
+  .dots i{
+    width:7px;height:7px;border-radius:50%;background:var(--indigo);
+    opacity:.35;animation:blink 1.2s infinite ease-in-out;
+  }
+  .dots i:nth-child(2){animation-delay:.2s}
+  .dots i:nth-child(3){animation-delay:.4s}
+  @keyframes blink{0%,80%,100%{opacity:.3}40%{opacity:1}}
+  .hint{margin-top:30px;font-size:12px;color:var(--gray);opacity:.8}
+  .hint a{color:var(--indigo);text-decoration:none}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="logo">
+      <span>M</span>
+      <div class="ring"></div>
+    </div>
+    <div class="brand">秒悟 <b>Meoo</b></div>
+    <div class="slogan">有想法，就秒悟</div>
+    <div class="dots"><i></i><i></i><i></i></div>
+    <div class="hint">正在进入官网… <a href="meoo_contest.html">直接打开</a></div>
+  </div>
+  <script>
+    // 兜底跳转（meta refresh 失败时）
+    setTimeout(function(){ location.replace("meoo_contest.html"); }, 1500);
+  </script>
+</body>
+</html>
